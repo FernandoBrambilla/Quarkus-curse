@@ -1,18 +1,25 @@
 package quarkus.rest.resources;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import org.h2.command.ddl.CreateUser;
 import quarkus.rest.dto.UserDto;
 import quarkus.rest.model.UserModel;
+import quarkus.rest.repository.UserRepository;
 
 
 @Path("/users")
-public class users {
+public class UserResource {
+    private final UserRepository repository;
+
+    @Inject
+    public UserResource(UserRepository repository){
+        this.repository = repository;
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -22,13 +29,13 @@ public class users {
         UserModel userModel = new UserModel();
         userModel.setAge(user.getAge());
         userModel.setName(user.getName());
-        userModel.persist();
+        repository.persist(userModel);
         return Response.ok(userModel).build();
     }
 
     @GET
     public Response listAllUsers(){
-        PanacheQuery<UserModel> query = UserModel.findAll();
+        PanacheQuery<UserModel> query = repository.findAll();
         return Response.ok(query.list()).build();
     }
 
@@ -36,9 +43,9 @@ public class users {
     @Path("{id}")
     @Transactional
     public Response deleteUser(@PathParam("id") Long id){
-        UserModel user =  UserModel.findById(id);
+        UserModel user =  repository.findById(id);
         if(user != null) {
-            user.delete();
+            repository.delete(user);
             return Response.ok().build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -48,7 +55,7 @@ public class users {
     @Path("{id}")
     @Transactional
     public Response updateUser(@PathParam("id") Long id, UserDto userDto){
-        UserModel user =  UserModel.findById(id);
+        UserModel user =  repository.findById(id);
         if(user != null) {
             user.setName(userDto.getName());
             user.setAge(userDto.getAge());

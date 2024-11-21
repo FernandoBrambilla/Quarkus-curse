@@ -8,6 +8,4 @@ import quarkus.rest.resources.UserResource;
 @ApplicationScoped
 public class UserRepository implements PanacheRepository<UserModel> {
 
-
-
 }

@@ -18,6 +18,8 @@ import java.util.Set;
 
 
 @Path("/users")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
     private final UserRepository repository;
     private final Validator validator;
@@ -29,8 +31,6 @@ public class UserResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public Response createUser(UserDto user){
         Set<ConstraintViolation<UserDto>> violations = validator.validate(user);

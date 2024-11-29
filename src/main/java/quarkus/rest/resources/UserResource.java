@@ -11,7 +11,7 @@ import jakarta.ws.rs.core.Response;
 
 import quarkus.rest.dto.ResponseError;
 import quarkus.rest.dto.UserDto;
-import quarkus.rest.model.UserModel;
+import quarkus.rest.entities.User;
 import quarkus.rest.repository.UserRepository;
 
 import java.util.Set;
@@ -38,7 +38,7 @@ public class UserResource {
             return ResponseError.createFromValidation(violations)
                     .withStatusCode(ResponseError.UNPROCESSABLE_ENTITY_STATUS);
         }
-        UserModel userModel = new UserModel();
+        User userModel = new User();
         userModel.setAge(user.getAge());
         userModel.setName(user.getName());
         repository.persist(userModel);
@@ -49,7 +49,7 @@ public class UserResource {
 
     @GET
     public Response listAllUsers(){
-        PanacheQuery<UserModel> query = repository.findAll();
+        PanacheQuery<User> query = repository.findAll();
         return Response.ok(query.list()).build();
     }
 
@@ -57,7 +57,7 @@ public class UserResource {
     @Path("{id}")
     @Transactional
     public Response deleteUser(@PathParam("id") Long id){
-        UserModel user =  repository.findById(id);
+        User user =  repository.findById(id);
         if(user != null) {
             repository.delete(user);
             return Response.noContent().build();
@@ -69,7 +69,7 @@ public class UserResource {
     @Path("{id}")
     @Transactional
     public Response updateUser(@PathParam("id") Long id, UserDto userDto){
-        UserModel user =  repository.findById(id);
+        User user =  repository.findById(id);
         if(user != null) {
             user.setName(userDto.getName());
             user.setAge(userDto.getAge());

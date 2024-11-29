@@ -1,7 +1,6 @@
 package quarkus.rest.dto;
 
-import org.jboss.logging.annotations.Pos;
-import quarkus.rest.model.PostModel;
+import quarkus.rest.entities.Post;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +8,7 @@ public class PostDto {
     private String text;
     private LocalDateTime dateTime;
 
-    public static PostDto fromEntity(PostModel post){
+    public static PostDto fromEntity(Post post){
        PostDto response = new PostDto();
         response.setText(post.getText());
         response.setDateTime(post.getDateTime());
